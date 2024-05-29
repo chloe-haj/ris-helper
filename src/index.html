@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
     <meta charset="UTF-8">
@@ -21,6 +21,7 @@
             <h1 class="ui header">RIS-Helper</h1>
             <div class="ui form">
                 <div class="field">
+                    <!--Stations are fetched via the hafas backend @v5.db.transport.rest-->
                     <label>Station</label>
                     <div class="ui remote search selection dropdown">
                         <input type="hidden" name="" id="evasNr">
@@ -44,6 +45,7 @@
                     </select>
                 </div>
                 <div class="field">
+                    <!--sometimes multiple stations are grouped together this decides if departures for those other station will be shown-->
                     <div class="ui toggle checkbox">
                         <input type="checkbox" tabindex="0" class="hidden">
                         <label>dazugehörende Stationen anzeigen</label>
@@ -67,13 +69,15 @@
             $('.ui.search.dropdown')
                 .dropdown({
                     apiSettings: {
+                        //TODO: add ril 100 support
                         url: 'https://v5.db.transport.rest/stations?query={query}&limit=10&fuzzy=true',
                         onResponse: (function (hafasResponse) {
                             var response = {
-                                "success": true,
+                                "success": true, //TODO: add checks if the request was actually succesful
                                 "results": []
                             }
                             $.each(hafasResponse, function (index, item) {
+                                //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
                                 response.results.push({
                                     name: item.name,
                                     value: item.id
