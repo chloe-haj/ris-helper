@@ -7,11 +7,140 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
     <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
-    <title>Document</title>
+    <style>
+        body>.grid {
+            height: 100%;
+        }
+    </style>
+    <title>RIS-Helper</title>
 </head>
 
 <body>
-
+    <div class="ui middle aligned two column center aligned grid container">
+        <div class="column">
+            <h1 class="ui header">RIS-Helper</h1>
+            <div class="ui form">
+                <div class="field">
+                    <label>Station</label>
+                    <div class="ui remote search selection dropdown">
+                        <input type="hidden" name="" id="evasNr">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Search...</div>
+                        <div class="menu"></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Verkehrsmittel</label>
+                    <select id="transportType" multiple="" class="ui transport dropdown">
+                        <option value="">Verkehrsmittel auswählen</option>
+                        <option value="HIGH_SPEED_TRAIN">Hochgeschwindigkeitszüge</option>
+                        <option value="INTERCITY_TRAIN">Intercity und Eurocity</option>
+                        <option value="INTER_REGIONAL_TRAIN">Interregio und Schnellzüge</option>
+                        <option value="REGIONAL_TRAIN">Regionalverkehrszüge</option>
+                        <option value="CITY_TRAIN">S-Bahn</option>
+                        <option value="SUBWAY">U-Bahn</option>
+                        <option value="TRAM">Straßenbahn</option>
+                        <option value="BUS">Bus</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" tabindex="0" class="hidden">
+                        <label>dazugehörende Stationen anzeigen</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Zeitspanne in Minuten</label>
+                    <div class="ui bottom aligned labeled slider" id="timeSpan"></div>
+                </div>
+                <div class="field">
+                    <label>Seiten für "folgende Züge"</label>
+                    <div class="ui bottom aligned labeled slider" id="pages"></div>
+                </div>
+                <div class="field">
+                    <button class="positive ui button" id="submit">Seite öffnen</button>
+                    <button class="negative ui button" id="delete">Daten löschen</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('.ui.search.dropdown')
+                .dropdown({
+                    apiSettings: {
+                        url: 'https://v5.db.transport.rest/stations?query={query}&limit=10&fuzzy=true',
+                        onResponse: (function (hafasResponse) {
+                            var response = {
+                                "success": true,
+                                "results": []
+                            }
+                            $.each(hafasResponse, function (index, item) {
+                                response.results.push({
+                                    name: item.name,
+                                    value: item.id
+                                })
+                            })
+                            return response
+                        }),
+                        saveRemoteData: true
+                    }
+                });
+            $('.ui.transport.dropdown')
+                .dropdown()
+                ;
+            $('.ui.checkbox')
+                .checkbox()
+                ;
+            $('.ui.slider' && "#timeSpan")
+                .slider({
+                    min: 60,
+                    max: 240,
+                    start: 180,
+                    step: 10
+                })
+                ;
+            $('.ui.slider' && "#pages")
+                .slider({
+                    min: 1,
+                    max: 6,
+                    start: 3,
+                    step: 1
+                })
+                ;
+            $('#delete')
+                .click(function () {
+                    $('.ui.dropdown')
+                        .dropdown("clear", true)
+                        .dropdown("clear cache");
+                    $('.ui.checkbox')
+                        .checkbox("uncheck")
+                        ;
+                    $('.ui.slider' && "#timeSpan")
+                        .slider({
+                            min: 60,
+                            max: 240,
+                            start: 180,
+                            step: 10
+                        })
+                        ;
+                    $('.ui.slider' && "#pages")
+                        .slider({
+                            min: 1,
+                            max: 6,
+                            start: 3,
+                            step: 1
+                        })
+                        ;
+                })
+            $("#submit")
+                .click(function () {
+                    var evas = $("#evasNr").attr("value");
+                    var transportTypes = $(".ui.transport.dropdown").dropdown("get values").toString();
+                    var includeStationGroup = $(".ui.checkbox").checkbox("is checked").toString();
+                    var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
+                    var pages = $('.ui.slider' && "#pages").slider("get value");
+                    window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&transportTypes=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
+                })
+        </script>
 </body>
 
 </html>
