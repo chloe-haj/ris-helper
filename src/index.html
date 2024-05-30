@@ -16,7 +16,8 @@
 </head>
 
 <body>
-    <div class="ui middle aligned two column center aligned grid container">
+    <div class="ui equal width middle aligned center aligned grid container">
+        <div class="computer only three wide column"></div>
         <div class="column">
             <h1 class="ui header">RIS-Helper</h1>
             <div class="ui form">
@@ -64,13 +65,14 @@
                     <button class="negative ui button" id="delete">Daten löschen</button>
                 </div>
             </div>
+
         </div>
         <script>
             $('.ui.search.dropdown')
                 .dropdown({
                     apiSettings: {
                         //TODO: add ril 100 support
-                        url: 'https://v5.db.transport.rest/stations?query={query}&limit=10&fuzzy=true',
+                        url: 'https://v6.db.transport.rest/stations?query={query}&results=20&fuzzy=true',
                         onResponse: (function (hafasResponse) {
                             var response = {
                                 "success": true, //TODO: add checks if the request was actually succesful
@@ -80,9 +82,12 @@
                                 //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
                                 response.results.push({
                                     name: item.name,
-                                    value: item.id
+                                    value: item.id,
+                                    score: item.score
                                 })
                             })
+                            //sort by score
+                            response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
                             return response
                         }),
                         saveRemoteData: true
