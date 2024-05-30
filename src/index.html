@@ -24,8 +24,7 @@
                 <div class="field">
                     <!--Stations are fetched via the hafas backend @v5.db.transport.rest-->
                     <label>Station</label>
-                    <div class="ui remote search selection dropdown">
-                        <input type="hidden" name="" id="evasNr">
+                    <div class="ui remote multiple search selection dropdown">
                         <i class="dropdown icon"></i>
                         <div class="default text">Search...</div>
                         <div class="menu"></div>
@@ -51,6 +50,7 @@
                         <input type="checkbox" tabindex="0" class="hidden">
                         <label>dazugehörende Stationen anzeigen</label>
                     </div>
+                    <i class="question circle link icon" style="visibility: visible;" id="stationGroup"></i>
                 </div>
                 <div class="field">
                     <label>Zeitspanne in Minuten</label>
@@ -60,12 +60,34 @@
                     <label>Seiten für "folgende Züge"</label>
                     <div class="ui bottom aligned labeled slider" id="pages"></div>
                 </div>
+                <div class="ui divider"></div>
+                <div class="field">
+                    <div class="ui negative message">
+                        <div class="header">Aktuell kommt es zu einer Fehlermeldung bei Stationen mit wenigen Abfahrten.
+                        </div>Manchmal hilft es, mehrere Verkehrsmittel auszuwählen
+                        oder die Zeitspanne zu vergrößern.
+                    </div>
+                </div>
                 <div class="field">
                     <button class="positive ui button" id="submit">Seite öffnen</button>
                     <button class="negative ui button" id="delete">Daten löschen</button>
                 </div>
             </div>
 
+        </div>
+        <div class="computer only three wide column"></div>
+        <div class="ui bottom fixed text menu">
+            <a class="item" href="https://github.com/chloe-haj/ris-helper"><i class="github icon"></i>Quelltext</a>
+            <a class="item" id="impressumTrigger">Impressum</a>
+        </div>
+        <div class="ui modal" id="impressum">
+            <i class="close icon"></i>
+            <div class="header">Impressum</div>
+            <div class="content" id="impressumContent">
+                <div class="ui loading segment">
+                    <p></p>
+                </div>
+            </div>
         </div>
         <script>
             $('.ui.search.dropdown')
@@ -90,15 +112,25 @@
                             response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
                             return response
                         }),
-                        saveRemoteData: true
-                    }
+                    },
+                    saveRemoteData: true,
+                    keepSearchTerm: true,
                 });
             $('.ui.transport.dropdown')
                 .dropdown()
-                ;
+                .dropdown("set selected", ["HIGH_SPEED_TRAIN", "INTERCITY_TRAIN", "INTER_REGIONAL_TRAIN", "REGIONAL_TRAIN"])
+                .dropdown("save defaults");
             $('.ui.checkbox')
                 .checkbox()
                 ;
+            $("#stationGroup").click(function () {
+                $.modal({
+                    title: "dazugehörende Stationen",
+                    class: 'tiny',
+                    closeIcon: true,
+                    content: "Manche Stationen liegen zwar geografisch zusammen, sind aber betrieblich getrennt z.B. Köln Messe/Deutz und Köln Messe/Deutz (tief). Mit dieser Option werden auch Züge der dazugehörenden Stationen angezeigt"
+                }).modal("show");
+            });
             $('.ui.slider' && "#timeSpan")
                 .slider({
                     min: 60,
@@ -118,7 +150,7 @@
             $('#delete')
                 .click(function () {
                     $('.ui.dropdown')
-                        .dropdown("clear", true)
+                        .dropdown("restore defaults")
                         .dropdown("clear cache");
                     $('.ui.checkbox')
                         .checkbox("uncheck")
@@ -142,13 +174,22 @@
                 })
             $("#submit")
                 .click(function () {
-                    var evas = $("#evasNr").attr("value");
+                    var evas = $(".ui.search.dropdown").dropdown("get values").toString();
                     var transportTypes = $(".ui.transport.dropdown").dropdown("get values").toString();
                     var includeStationGroup = $(".ui.checkbox").checkbox("is checked").toString();
                     var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
                     var pages = $('.ui.slider' && "#pages").slider("get value");
                     window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&transportTypes=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
+                });
+            $("#impressumTrigger").click(function () {
+                $("#impressumContent").load("impressum.html", function (responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success")
+                        $("#impressum").modal("show");
+                    if (statusTxt == "error")
+                        console.log(responseTxt)
                 })
+
+            });
         </script>
 </body>
 
