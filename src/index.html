@@ -82,7 +82,7 @@
             <a class="item" id="impressumTrigger">Impressum</a>
             <div class="right menu">
                 <div class="ui item">
-                    Beta 0.2.0
+                    Beta 0.2.1
                 </div>
             </div>
         </div>
@@ -103,13 +103,6 @@
         </div>
     </div>
     <script>
-        function cutieSpotted() {
-            $.toast({
-                title: 'cutie spotted <i class="twa twa-eyes">',
-                message: 'you found a cutie <br> take some headpats <i>pat pat</i>',
-            })
-            console.log("You called?")
-        }
         $('.ui.search.dropdown')
             .dropdown({
                 apiSettings: {
@@ -122,14 +115,31 @@
                         };
                         switch ($('.ui.search.dropdown').dropdown('get query')) {
                             case "Lili":
-
+                                cutie = true
                                 response.results.push({
                                     name: "Limburg (Lahn)",
                                     value: "8000229",
                                     score: "999"
+
                                 });
                                 break;
+                            case "Chloe":
+                                cutie = true
+                                response.results.push({
+                                    name: "Karlsruhe Hbf",
+                                    value: "8000191",
+                                    score: "999"
+                                });
+                                break;
+                            default:
+                                cutie = false
                         };
+                        if (cutie) {
+                            $("#cutieToast").toast({
+                                showProgress: "bottom",
+                                displayTime: 10000,
+                            })
+                        }
 
                         $.each(hafasResponse, function (index, item) {
                             //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
@@ -147,14 +157,9 @@
                 saveRemoteData: true,
                 keepSearchTerm: true,
                 onSearch: function () {
-                    switch ($('.ui.search.dropdown').dropdown('get query')) {
-                        case "Lili":
-                            $("#cutieToast").toast({
-                                showProgress: "bottom",
-                            })
-                            break;
-                    };
-                    return true
+                    if (window.cutie) {
+
+                    }
                 }
             });
         $('.ui.transport.dropdown')
