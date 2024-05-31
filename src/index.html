@@ -82,7 +82,7 @@
             <a class="item" id="impressumTrigger">Impressum</a>
             <div class="right menu">
                 <div class="ui item">
-                    Beta 0.2.1
+                    Beta 0.2.2
                 </div>
             </div>
         </div>
@@ -116,7 +116,7 @@
                         switch ($('.ui.search.dropdown').dropdown('get query').toLowerCase()) {
                             case "lili":
                                 response.results.push({
-                                    name: "Limburg (Lahn)",
+                                    name: "<b>FL</b> - Limburg (Lahn)",
                                     value: "8000229",
                                     score: "999"
 
@@ -124,7 +124,7 @@
                                 break;
                             case "chloe":
                                 response.results.push({
-                                    name: "Karlsruhe Hbf",
+                                    name: "<b>RK</b> - Karlsruhe Hbf",
                                     value: "8000191",
                                     score: "999"
                                 });
@@ -133,7 +133,7 @@
                         $.each(hafasResponse, function (index, item) {
                             //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
                             response.results.push({
-                                name: item.name,
+                                name: `<b>${item.ril100}</b> - ${item.name}`,
                                 value: item.id,
                                 score: item.score
                             })
