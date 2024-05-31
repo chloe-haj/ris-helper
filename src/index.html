@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
     <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/SebastianAigner/twemoji-amazing/twemoji-amazing.css">
     <style>
         body>.grid {
             height: 100%;
@@ -89,108 +90,143 @@
                 </div>
             </div>
         </div>
-        <script>
-            $('.ui.search.dropdown')
-                .dropdown({
-                    apiSettings: {
-                        //TODO: add ril 100 support
-                        url: 'https://v6.db.transport.rest/stations?query={query}&results=20&fuzzy=true',
-                        onResponse: (function (hafasResponse) {
-                            var response = {
-                                "success": true, //TODO: add checks if the request was actually succesful
-                                "results": []
-                            }
-                            $.each(hafasResponse, function (index, item) {
-                                //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
-                                response.results.push({
-                                    name: item.name,
-                                    value: item.id,
-                                    score: item.score
-                                })
-                            })
-                            //sort by score
-                            response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
-                            return response
-                        }),
-                    },
-                    saveRemoteData: true,
-                    keepSearchTerm: true,
-                });
-            $('.ui.transport.dropdown')
-                .dropdown()
-                .dropdown("set selected", ["HIGH_SPEED_TRAIN", "INTERCITY_TRAIN", "INTER_REGIONAL_TRAIN", "REGIONAL_TRAIN"])
-                .dropdown("save defaults");
-            $('.ui.checkbox')
-                .checkbox()
-                ;
-            $("#stationGroup").click(function () {
-                $.modal({
-                    title: "dazugehörende Stationen",
-                    class: 'tiny',
-                    closeIcon: true,
-                    content: "Manche Stationen liegen zwar geografisch zusammen, sind aber betrieblich getrennt z.B. Köln Messe/Deutz und Köln Messe/Deutz (tief). Mit dieser Option werden auch Züge der dazugehörenden Stationen angezeigt"
-                }).modal("show");
-            });
-            $('.ui.slider' && "#timeSpan")
-                .slider({
-                    min: 60,
-                    max: 240,
-                    start: 180,
-                    step: 10
-                })
-                ;
-            $('.ui.slider' && "#pages")
-                .slider({
-                    min: 1,
-                    max: 6,
-                    start: 3,
-                    step: 1
-                })
-                ;
-            $('#delete')
-                .click(function () {
-                    $('.ui.dropdown')
-                        .dropdown("restore defaults")
-                        .dropdown("clear cache");
-                    $('.ui.checkbox')
-                        .checkbox("uncheck")
-                        ;
-                    $('.ui.slider' && "#timeSpan")
-                        .slider({
-                            min: 60,
-                            max: 240,
-                            start: 180,
-                            step: 10
-                        })
-                        ;
-                    $('.ui.slider' && "#pages")
-                        .slider({
-                            min: 1,
-                            max: 6,
-                            start: 3,
-                            step: 1
-                        })
-                        ;
-                })
-            $("#submit")
-                .click(function () {
-                    var evas = $(".ui.search.dropdown").dropdown("get values").toString();
-                    var transportTypes = $(".ui.transport.dropdown").dropdown("get values").toString();
-                    var includeStationGroup = $(".ui.checkbox").checkbox("is checked").toString();
-                    var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
-                    var pages = $('.ui.slider' && "#pages").slider("get value");
-                    window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&transportTypes=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
-                });
-            $("#impressumTrigger").click(function () {
-                $("#impressumContent").load("impressum.html", function (responseTxt, statusTxt, xhr) {
-                    if (statusTxt == "success")
-                        $("#impressum").modal("show");
-                    if (statusTxt == "error")
-                        console.log(responseTxt)
-                })
+    </div>
+    <div class="ui inverted toast" id="cutieToast">
+        <div class="content">
+            <div class="ui header">cutie spotted <i class="twa twa-eyes"></i></div>
+            you found a cutie <br> take some headpats <i>pat pat</i>
+        </div>
+    </div>
+    <script>
+        function cutieSpotted() {
+            $.toast({
+                title: 'cutie spotted <i class="twa twa-eyes">',
+                message: 'you found a cutie <br> take some headpats <i>pat pat</i>',
+            })
+            console.log("You called?")
+        }
+        $('.ui.search.dropdown')
+            .dropdown({
+                apiSettings: {
+                    //TODO: add ril 100 support
+                    url: 'https://v6.db.transport.rest/stations?query={query}&results=20&fuzzy=true',
+                    onResponse: function (hafasResponse) {
+                        var response = {
+                            "success": true, //TODO: add checks if the request was actually succesful
+                            "results": []
+                        };
+                        switch ($('.ui.search.dropdown').dropdown('get query')) {
+                            case "Lili":
 
+                                response.results.push({
+                                    name: "Limburg (Lahn)",
+                                    value: "8000229",
+                                    score: "999"
+                                });
+                                break;
+                        };
+
+                        $.each(hafasResponse, function (index, item) {
+                            //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
+                            response.results.push({
+                                name: item.name,
+                                value: item.id,
+                                score: item.score
+                            })
+                        })
+                        //sort by score
+                        response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+                        return response
+                    },
+                },
+                saveRemoteData: true,
+                keepSearchTerm: true,
+                onSearch: function () {
+                    switch ($('.ui.search.dropdown').dropdown('get query')) {
+                        case "Lili":
+                            $("#cutieToast").toast({
+                                showProgress: "bottom",
+                            })
+                            break;
+                    };
+                    return true
+                }
             });
-        </script>
+        $('.ui.transport.dropdown')
+            .dropdown()
+            .dropdown("set selected", ["HIGH_SPEED_TRAIN", "INTERCITY_TRAIN", "INTER_REGIONAL_TRAIN", "REGIONAL_TRAIN"])
+            .dropdown("save defaults");
+        $('.ui.checkbox')
+            .checkbox()
+            ;
+        $("#stationGroup").click(function () {
+            $.modal({
+                title: "dazugehörende Stationen",
+                class: 'tiny',
+                closeIcon: true,
+                content: "Manche Stationen liegen zwar geografisch zusammen, sind aber betrieblich getrennt z.B. Köln Messe/Deutz und Köln Messe/Deutz (tief). Mit dieser Option werden auch Züge der dazugehörenden Stationen angezeigt"
+            }).modal("show");
+        });
+        $('.ui.slider' && "#timeSpan")
+            .slider({
+                min: 60,
+                max: 240,
+                start: 180,
+                step: 10
+            })
+            ;
+        $('.ui.slider' && "#pages")
+            .slider({
+                min: 1,
+                max: 6,
+                start: 3,
+                step: 1
+            })
+            ;
+        $('#delete')
+            .click(function () {
+                $('.ui.dropdown')
+                    .dropdown("restore defaults")
+                    .dropdown("clear cache");
+                $('.ui.checkbox')
+                    .checkbox("uncheck")
+                    ;
+                $('.ui.slider' && "#timeSpan")
+                    .slider({
+                        min: 60,
+                        max: 240,
+                        start: 180,
+                        step: 10
+                    })
+                    ;
+                $('.ui.slider' && "#pages")
+                    .slider({
+                        min: 1,
+                        max: 6,
+                        start: 3,
+                        step: 1
+                    })
+                    ;
+            })
+        $("#submit")
+            .click(function () {
+                var evas = $(".ui.search.dropdown").dropdown("get values").toString();
+                var transportTypes = $(".ui.transport.dropdown").dropdown("get values").toString();
+                var includeStationGroup = $(".ui.checkbox").checkbox("is checked").toString();
+                var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
+                var pages = $('.ui.slider' && "#pages").slider("get value");
+                window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&transportTypes=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
+            });
+        $("#impressumTrigger").click(function () {
+            $("#impressumContent").load("impressum.html", function (responseTxt, statusTxt, xhr) {
+                if (statusTxt == "success")
+                    $("#impressum").modal("show");
+                if (statusTxt == "error")
+                    console.log(responseTxt)
+            })
+
+        });
+    </script>
 </body>
 
 </html>
