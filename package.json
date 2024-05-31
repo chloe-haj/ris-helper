@@ -1,0 +1,18 @@
+{
+  "name": "ris-helper",
+  "version": "1.0.0",
+  "description": "helper tool to create url parameters for the db ris abfahrtstafel",
+  "main": "src/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "C:\\Users\\accou\\OneDrive - Chloe Lobatz\\ThinkPad\\Documents\\Projects\\ris-helper"
+  },
+  "author": "chloe-haj",
+  "license": "ISC",
+  "dependencies": {
+    "fomantic-ui": "^2.9.3"
+  }
+}
