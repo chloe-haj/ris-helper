@@ -113,9 +113,8 @@
                             "success": true, //TODO: add checks if the request was actually succesful
                             "results": []
                         };
-                        switch ($('.ui.search.dropdown').dropdown('get query')) {
-                            case "Lili":
-                                cutie = true
+                        switch ($('.ui.search.dropdown').dropdown('get query').toLowerCase()) {
+                            case "lili":
                                 response.results.push({
                                     name: "Limburg (Lahn)",
                                     value: "8000229",
@@ -123,24 +122,14 @@
 
                                 });
                                 break;
-                            case "Chloe":
-                                cutie = true
+                            case "chloe":
                                 response.results.push({
                                     name: "Karlsruhe Hbf",
                                     value: "8000191",
                                     score: "999"
                                 });
                                 break;
-                            default:
-                                cutie = false
                         };
-                        if (cutie) {
-                            $("#cutieToast").toast({
-                                showProgress: "bottom",
-                                displayTime: 10000,
-                            })
-                        }
-
                         $.each(hafasResponse, function (index, item) {
                             //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
                             response.results.push({
@@ -157,11 +146,17 @@
                 saveRemoteData: true,
                 keepSearchTerm: true,
                 onSearch: function () {
-                    if (window.cutie) {
-
+                    let cuties = ["lili", "chloe"]
+                    for (let index = 0; index < cuties.length; index++) {
+                        if ($(".ui.search.dropdown").dropdown("get query").toLowerCase() == cuties[index]) {
+                            $("#cutieToast").toast({
+                                showProgress: "bottom",
+                                displayTime: 10000,
+                            })
+                        }
                     }
                 }
-            });
+            })
         $('.ui.transport.dropdown')
             .dropdown()
             .dropdown("set selected", ["HIGH_SPEED_TRAIN", "INTERCITY_TRAIN", "INTER_REGIONAL_TRAIN", "REGIONAL_TRAIN"])
