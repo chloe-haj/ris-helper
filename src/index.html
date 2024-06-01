@@ -82,7 +82,7 @@
             <a class="item" id="impressumTrigger">Impressum</a>
             <div class="right menu">
                 <div class="ui item">
-                    Beta 0.2.2
+                    Beta 0.3.0
                 </div>
             </div>
         </div>
@@ -113,7 +113,27 @@
                             "success": true, //TODO: add checks if the request was actually succesful
                             "results": []
                         };
-                        switch ($('.ui.search.dropdown').dropdown('get query').toLowerCase()) {
+                        var query = $('.ui.search.dropdown').dropdown('get query')
+                        if (1 < query.trim().length < 5) {
+                            var ril100 = query.toUpperCase();
+                            $.ajax(`https://v6.db.transport.rest/stations/${ril100}`, {
+                                success: function (res) {
+                                    if (res.ril100 == ril100) {
+                                        response.results.push({
+                                            name: `<b>${res.ril100}</b> - ${res.name}`,
+                                            value: res.id,
+                                            score: "999"
+
+                                        });
+                                    }
+                                },
+                                async: false
+                            })
+                        }
+
+
+
+                        switch (query.toLowerCase()) {
                             case "lili":
                                 response.results.push({
                                     name: "<b>FL</b> - Limburg (Lahn)",
