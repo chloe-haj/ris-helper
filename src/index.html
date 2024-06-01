@@ -82,7 +82,7 @@
             <a class="item" id="impressumTrigger">Impressum</a>
             <div class="right menu">
                 <div class="ui item">
-                    Beta 0.2.2
+                    Beta 0.3.0
                 </div>
             </div>
         </div>
@@ -116,16 +116,18 @@
                         var query = $('.ui.search.dropdown').dropdown('get query')
                         if (1 < query.trim().length < 5) {
                             var ril100 = query.toUpperCase();
-                            const name = await fetch(`https://ril100.bahnhof.name/${ril100}`)
-                            $.get(`https://v6.db.transport.rest/stations/${name}`, {
-                                success: function (evas) {
-                                    response.results.push({
-                                        name: `<b>${ril100}</b> - ${window.name}`,
-                                        value: evas,
-                                        score: "999"
+                            $.ajax(`https://v6.db.transport.rest/stations/${ril100}`, {
+                                success: function (res) {
+                                    if (res.ril100 == ril100) {
+                                        response.results.push({
+                                            name: `<b>${res.ril100}</b> - ${res.name}`,
+                                            value: res.id,
+                                            score: "999"
 
-                                    });
-                                }
+                                        });
+                                    }
+                                },
+                                async: false
                             })
                         }
 
