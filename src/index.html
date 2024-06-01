@@ -113,7 +113,32 @@
                             "success": true, //TODO: add checks if the request was actually succesful
                             "results": []
                         };
-                        switch ($('.ui.search.dropdown').dropdown('get query').toLowerCase()) {
+                        var query = $('.ui.search.dropdown').dropdown('get query')
+                        if (1 < query.trim().length < 5) {
+                            var ril100 = query.toUpperCase();
+
+                            $.ajax(`https://apis.deutschebahn.com/db-api-marketplace/apis/station-data/v2/stations?limit=1&ril=${ril100}`, {
+                                async: false,
+                                headers: {
+                                    "DB-Client-ID": "",
+                                    "DB-Api-Key": ""
+                                },
+                                success: function (staDaResponse) {
+                                    console.log(staDaResponse.result[0])
+                                    response.results.push({
+                                        name: `<b>${ril100}</b> - ${staDaResponse.result[0].name}`,
+                                        value: $.each(staDaResponse.result[0].evaNumbers, function (index, item) {
+                                            if (item.isMain) {
+                                                return item.number
+                                            }
+                                        }),
+                                        score: "999"
+
+                                    });
+                                }
+                            })
+                        }
+                        switch (query.toLowerCase()) {
                             case "lili":
                                 response.results.push({
                                     name: "<b>FL</b> - Limburg (Lahn)",
