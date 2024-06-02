@@ -82,7 +82,7 @@
             <a class="item" id="impressumTrigger">Impressum</a>
             <div class="right menu">
                 <div class="ui item">
-                    Beta 0.3.0
+                    Beta 0.3.1
                 </div>
             </div>
         </div>
@@ -149,6 +149,14 @@
                                     score: "999"
                                 });
                                 break;
+                            case "atlantik":
+                            case "emily":
+                                response.results.push({
+                                    name: "<b>MAT</b> - Altötting",
+                                    value: "8000555",
+                                    score: "999"
+                                });
+                                break;
                         };
                         $.each(hafasResponse, function (index, item) {
                             //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
@@ -166,7 +174,7 @@
                 saveRemoteData: true,
                 keepSearchTerm: true,
                 onSearch: function () {
-                    let cuties = ["lili", "chloe"]
+                    let cuties = ["lili", "chloe", "emily", "atlantik"]
                     for (let index = 0; index < cuties.length; index++) {
                         if ($(".ui.search.dropdown").dropdown("get query").toLowerCase() == cuties[index]) {
                             $("#cutieToast").toast({
