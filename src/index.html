@@ -103,6 +103,27 @@
         </div>
     </div>
     <script>
+        //declaration of functions
+        function initSliders() {
+            $('.ui.slider' && "#timeSpan")
+                .slider({
+                    min: 60,
+                    max: 240,
+                    start: 180,
+                    step: 10
+                })
+                ;
+            $('.ui.slider' && "#pages")
+                .slider({
+                    min: 1,
+                    max: 6,
+                    start: 3,
+                    step: 1
+                })
+                ;
+        }
+
+
         $('.ui.search.dropdown')
             .dropdown({
                 apiSettings: {
@@ -114,15 +135,17 @@
                             "results": []
                         };
                         var query = $('.ui.search.dropdown').dropdown('get query')
+                        //check if the query is a ril100 abbreviation
                         if (1 < query.trim().length < 5) {
                             var ril100 = query.toUpperCase();
+                            //get name and id for the ril 100 abbreviation
                             $.ajax(`https://v6.db.transport.rest/stations/${ril100}`, {
                                 success: function (res) {
                                     if (res.ril100 == ril100) {
                                         response.results.push({
                                             name: `<b>${res.ril100}</b> - ${res.name}`,
                                             value: res.id,
-                                            score: "999"
+                                            score: "999" //always top result 
 
                                         });
                                     }
@@ -132,9 +155,9 @@
                         }
 
 
-
+                        //add results for some special people
                         switch (query.toLowerCase()) {
-                            case "lili":
+                            case "lili":    //@lili@zug.network
                                 response.results.push({
                                     name: "<b>FL</b> - Limburg (Lahn)",
                                     value: "8000229",
@@ -142,7 +165,7 @@
 
                                 });
                                 break;
-                            case "chloe":
+                            case "chloe":   //@enbychloe@zug.network 
                                 response.results.push({
                                     name: "<b>RK</b> - Karlsruhe Hbf",
                                     value: "8000191",
@@ -174,6 +197,7 @@
                 saveRemoteData: true,
                 keepSearchTerm: true,
                 onSearch: function () {
+                    //trigger the cuties toast if any cutie is present in the search 
                     let cuties = ["lili", "chloe", "emily", "atlantik"]
                     for (let index = 0; index < cuties.length; index++) {
                         if ($(".ui.search.dropdown").dropdown("get query").toLowerCase() == cuties[index]) {
@@ -200,23 +224,8 @@
                 content: "Manche Stationen liegen zwar geografisch zusammen, sind aber betrieblich getrennt z.B. Köln Messe/Deutz und Köln Messe/Deutz (tief). Mit dieser Option werden auch Züge der dazugehörenden Stationen angezeigt"
             }).modal("show");
         });
-        $('.ui.slider' && "#timeSpan")
-            .slider({
-                min: 60,
-                max: 240,
-                start: 180,
-                step: 10
-            })
-            ;
-        $('.ui.slider' && "#pages")
-            .slider({
-                min: 1,
-                max: 6,
-                start: 3,
-                step: 1
-            })
-            ;
-        $('#delete')
+        initSliders();
+        $('#delete') //reset form to defaults 
             .click(function () {
                 $('.ui.dropdown')
                     .dropdown("restore defaults")
@@ -224,22 +233,7 @@
                 $('.ui.checkbox')
                     .checkbox("uncheck")
                     ;
-                $('.ui.slider' && "#timeSpan")
-                    .slider({
-                        min: 60,
-                        max: 240,
-                        start: 180,
-                        step: 10
-                    })
-                    ;
-                $('.ui.slider' && "#pages")
-                    .slider({
-                        min: 1,
-                        max: 6,
-                        start: 3,
-                        step: 1
-                    })
-                    ;
+                initSliders();
             })
         $("#submit")
             .click(function () {
