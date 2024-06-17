@@ -82,7 +82,7 @@
             <a class="item" id="impressumTrigger">Impressum</a>
             <div class="right menu">
                 <div class="ui item">
-                    Beta 0.3.1
+                    Beta 0.3.2
                 </div>
             </div>
         </div>
@@ -131,7 +131,6 @@
                     url: 'https://v6.db.transport.rest/stations?query={query}&results=20&fuzzy=true',
                     onResponse: function (hafasResponse) {
                         var response = {
-                            "success": true, //TODO: add checks if the request was actually succesful
                             "results": []
                         };
                         var query = $('.ui.search.dropdown').dropdown('get query')
@@ -153,8 +152,6 @@
                                 async: false
                             })
                         }
-
-
                         //add results for some special people
                         switch (query.toLowerCase()) {
                             case "lili":    //@lili@zug.network
@@ -192,7 +189,7 @@
                         //sort by score
                         response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
                         return response
-                    },
+                    }
                 },
                 saveRemoteData: true,
                 keepSearchTerm: true,
@@ -209,6 +206,20 @@
                     }
                 }
             })
+        $(document).on("ajaxError", function (event, jqxhr, settings, thrownError) {
+            if ($(".ui.error.toast").toast("get toasts").length == 0)
+                $('body').toast({
+                    class: "error",
+                    title: "Error",
+                    message: `Bei der Suchanfrage ist ein Fehler aufgetreten <br> ${thrownError}`,
+                    classActions: "bottom attached",
+                    displayTime: 0,
+                    actions: [{
+                        text: "Ok"
+                    }],
+                    showIcon: "exclamation triangle"
+                })
+        })
         $('.ui.transport.dropdown')
             .dropdown()
             .dropdown("set selected", ["HIGH_SPEED_TRAIN", "INTERCITY_TRAIN", "INTER_REGIONAL_TRAIN", "REGIONAL_TRAIN"])
@@ -242,8 +253,24 @@
                 var includeStationGroup = $(".ui.checkbox").checkbox("is checked").toString();
                 var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
                 var pages = $('.ui.slider' && "#pages").slider("get value");
-                window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&transportTypes=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
-            });
+                if (evas && transportTypes != 0) {
+                    window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&transportTypes=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
+                }
+                else {
+                    if ($(".ui.warning.toast").toast("get toasts").length == 0)
+                        $('body').toast({
+                            class: "warning",
+                            title: "Error",
+                            message: `Die Felder "Station" und "Verkehrsmittel" müssen mindestens ein Element enthalten`,
+                            classActions: "bottom attached",
+                            displayTime: 0,
+                            actions: [{
+                                text: "Ok"
+                            }],
+                            showIcon: "exclamation triangle"
+                        })
+                }
+            })
         $("#impressumTrigger").click(function () {
             $("#impressumContent").load("impressum.html", function (responseTxt, statusTxt, xhr) {
                 if (statusTxt == "success")
