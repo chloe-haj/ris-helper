@@ -131,7 +131,6 @@
                     url: 'https://v6.db.transport.rest/stations?query={query}&results=20&fuzzy=true',
                     onResponse: function (hafasResponse) {
                         var response = {
-                            "success": true, //TODO: add checks if the request was actually succesful
                             "results": []
                         };
                         var query = $('.ui.search.dropdown').dropdown('get query')
@@ -153,7 +152,9 @@
                                 async: false
                             })
                         }
-
+                        if (Object.keys(hafasResponse).length == 0) {
+                            return { success: false }
+                        }
 
                         //add results for some special people
                         switch (query.toLowerCase()) {
@@ -193,6 +194,26 @@
                         response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
                         return response
                     },
+                    onFailure: function (response) {
+                        console.log("Failed")
+                    },
+                    error: function (XHR, status, errorText) {
+                        if (status == "error") {
+                            console.log("error")
+                            if ((".ui.toast").toast("get toasts").length != 0)
+                                $('body').toast({
+                                    class: "error",
+                                    title: "Error",
+                                    message: `Bei der Suchanfrage ist ein Fehler aufgetreten <br> ${errorText}`,
+                                    classActions: "bottom attached",
+                                    displayTime: 0,
+                                    actions: [{
+                                        text: "Ok"
+                                    }],
+                                    showIcon: "exclamation triangle"
+                                })
+                        }
+                    }
                 },
                 saveRemoteData: true,
                 keepSearchTerm: true,
