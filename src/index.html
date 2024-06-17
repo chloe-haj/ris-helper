@@ -204,22 +204,22 @@
                             })
                         }
                     }
+                },
+                onError: function () {
+                    if ($(".ui.error.toast").toast("get toasts").length == 0)
+                        $('body').toast({
+                            class: "error",
+                            title: "Error",
+                            message: `Bei der Suchanfrage ist ein Fehler aufgetreten <br> ${thrownError}`,
+                            classActions: "bottom attached",
+                            displayTime: 0,
+                            actions: [{
+                                text: "Ok"
+                            }],
+                            showIcon: "exclamation triangle"
+                        })
                 }
             })
-        $(document).on("ajaxError", function (event, jqxhr, settings, thrownError) {
-            if ($(".ui.error.toast").toast("get toasts").length == 0)
-                $('body').toast({
-                    class: "error",
-                    title: "Error",
-                    message: `Bei der Suchanfrage ist ein Fehler aufgetreten <br> ${thrownError}`,
-                    classActions: "bottom attached",
-                    displayTime: 0,
-                    actions: [{
-                        text: "Ok"
-                    }],
-                    showIcon: "exclamation triangle"
-                })
-        })
         $('.ui.transport.dropdown')
             .dropdown()
             .dropdown("set selected", ["HIGH_SPEED_TRAIN", "INTERCITY_TRAIN", "INTER_REGIONAL_TRAIN", "REGIONAL_TRAIN"])
@@ -271,15 +271,15 @@
                         })
                 }
             })
-        $("#impressumTrigger").click(function () {
-            $("#impressumContent").load("impressum.html", function (responseTxt, statusTxt, xhr) {
-                if (statusTxt == "success")
-                    $("#impressum").modal("show");
-                if (statusTxt == "error")
-                    console.log(responseTxt)
-            })
+z        $("#impressumTrigger").click(function () {
+                $("#impressumContent").load("impressum.html", function (responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success")
+                        $("#impressum").modal("show");
+                    if (statusTxt == "error")
+                        console.log(responseTxt)
+                })
 
-        });
+            });
     </script>
 </body>
 
