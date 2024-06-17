@@ -152,13 +152,6 @@
                                 async: false
                             })
                         }
-                        if (Object.keys(hafasResponse).length == 0) {
-                            return { success: false }
-                        }
-                        if (Object.keys(hafasResponse).length == 0) {
-                            return { success: false }
-                        }
-
                         //add results for some special people
                         switch (query.toLowerCase()) {
                             case "lili":    //@lili@zug.network
@@ -196,26 +189,6 @@
                         //sort by score
                         response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
                         return response
-                    },
-                    onFailure: function (response) {
-                        console.log("Failed")
-                    },
-                    error: function (XHR, status, errorText) {
-                        if (status == "error") {
-                            console.log("error")
-                            if ((".ui.toast").toast("get toasts").length != 0)
-                                $('body').toast({
-                                    class: "error",
-                                    title: "Error",
-                                    message: `Bei der Suchanfrage ist ein Fehler aufgetreten <br> ${errorText}`,
-                                    classActions: "bottom attached",
-                                    displayTime: 0,
-                                    actions: [{
-                                        text: "Ok"
-                                    }],
-                                    showIcon: "exclamation triangle"
-                                })
-                        }
                     }
                 },
                 saveRemoteData: true,
@@ -233,6 +206,20 @@
                     }
                 }
             })
+        $(document).on("ajaxError", function (event, jqxhr, settings, thrownError) {
+            if ($(".ui.error.toast").toast("get toasts").length == 0)
+                $('body').toast({
+                    class: "error",
+                    title: "Error",
+                    message: `Bei der Suchanfrage ist ein Fehler aufgetreten <br> ${thrownError}`,
+                    classActions: "bottom attached",
+                    displayTime: 0,
+                    actions: [{
+                        text: "Ok"
+                    }],
+                    showIcon: "exclamation triangle"
+                })
+        })
         $('.ui.transport.dropdown')
             .dropdown()
             .dropdown("set selected", ["HIGH_SPEED_TRAIN", "INTERCITY_TRAIN", "INTER_REGIONAL_TRAIN", "REGIONAL_TRAIN"])
@@ -266,8 +253,24 @@
                 var includeStationGroup = $(".ui.checkbox").checkbox("is checked").toString();
                 var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
                 var pages = $('.ui.slider' && "#pages").slider("get value");
-                window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&transportTypes=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
-            });
+                if (evas && transportTypes != 0) {
+                    window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&transportTypes=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
+                }
+                else {
+                    if ($(".ui.warning.toast").toast("get toasts").length == 0)
+                        $('body').toast({
+                            class: "warning",
+                            title: "Error",
+                            message: `Die Felder "Station" und "Verkehrsmittel" müssen mindestens ein Element enthalten`,
+                            classActions: "bottom attached",
+                            displayTime: 0,
+                            actions: [{
+                                text: "Ok"
+                            }],
+                            showIcon: "exclamation triangle"
+                        })
+                }
+            })
         $("#impressumTrigger").click(function () {
             $("#impressumContent").load("impressum.html", function (responseTxt, statusTxt, xhr) {
                 if (statusTxt == "success")
