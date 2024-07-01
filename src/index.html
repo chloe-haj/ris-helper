@@ -191,7 +191,7 @@
                         return response
                     },
                     error: function (XHR, status, error) {
-                        if ($(".ui.error.toast").toast("get toasts").length == 0)
+                        if ($(".ui.error.toast").toast("get toasts").length == 0 && error != "abort")
                             $('body').toast({
                                 class: "error",
                                 title: "Error",
