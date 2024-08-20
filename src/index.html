@@ -63,13 +63,6 @@
                 </div>
                 <div class="ui divider"></div>
                 <div class="field">
-                    <div class="ui negative message">
-                        <div class="header">Aktuell kommt es zu einer Fehlermeldung bei Stationen mit wenigen Abfahrten.
-                        </div>Manchmal hilft es, mehrere Verkehrsmittel auszuwählen
-                        oder die Zeitspanne zu vergrößern.
-                    </div>
-                </div>
-                <div class="field">
                     <button class="positive ui button" id="submit">Seite öffnen</button>
                     <button class="negative ui button" id="delete">Daten löschen</button>
                 </div>
@@ -255,7 +248,7 @@
                 var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
                 var pages = $('.ui.slider' && "#pages").slider("get value");
                 if (evas && transportTypes != 0) {
-                    window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&transportTypes=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
+                    window.open(`https://ris-abfahrtstafel.noncd.db.de/?evaNumbers=${evas}&filterTransports=${transportTypes}&includeStationGroup=${includeStationGroup}&timeSpan=${timeSpan}&pages=${pages}`);
                 }
                 else {
                     if ($(".ui.warning.toast").toast("get toasts").length == 0)
