@@ -270,7 +270,7 @@
                 }
             })
         $("#impressumTrigger").click(function () {
-            $("#impressumContent").load("impressum.html", function (responseTxt, statusTxt, xhr) {
+            $("#impressumContent").load("https://chloe.rosahaj.xyz/pages/impressum", function (responseTxt, statusTxt, xhr) {
                 if (statusTxt == "success")
                     $("#impressum").modal("show");
                 if (statusTxt == "error")
