@@ -73,22 +73,13 @@
         <div class="computer only three wide column"></div>
         <div class="ui bottom fixed text menu">
             <a class="item" href="https://github.com/chloe-haj/ris-helper"><i class="github icon"></i>Quelltext</a>
-            <a class="item" id="impressumTrigger">Impressum</a>
+            <a class="item" href="https://chloe.rosahaj.xyz/pages/impressum">Impressum</a>
             <div class="right menu">
                 <a class="item" href="https://github.com/chloe-haj/ris-helper/issues/new">
                     <i class="bug icon"></i>found a bug?
                 </a>
                 <div class="ui item">
                     0.4.0
-                </div>
-            </div>
-        </div>
-        <div class="ui modal" id="impressum">
-            <i class="close icon"></i>
-            <div class="header">Impressum</div>
-            <div class="content" id="impressumContent">
-                <div class="ui loading segment">
-                    <p></p>
                 </div>
             </div>
         </div>
@@ -269,15 +260,6 @@
                         })
                 }
             })
-        $("#impressumTrigger").click(function () {
-            $("#impressumContent").load("https://chloe.rosahaj.xyz/pages/impressum", function (responseTxt, statusTxt, xhr) {
-                if (statusTxt == "success")
-                    $("#impressum").modal("show");
-                if (statusTxt == "error")
-                    console.log(responseTxt)
-            })
-
-        });
     </script>
 </body>
 
