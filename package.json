@@ -12,7 +12,7 @@
   },
   "author": "chloe-haj",
   "license": "ISC",
-  "dependencies": {
-    "fomantic-ui": "^2.9.3"
+  "devDependencies": {
+    "tailwindcss": "^3.4.16"
   }
 }
