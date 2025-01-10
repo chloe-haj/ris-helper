@@ -27,15 +27,16 @@
                 <div class="field">
                     <!--Stations are fetched via the hafas backend @v5.db.transport.rest-->
                     <label>Station</label>
-                    <div class="ui remote multiple search selection dropdown">
+                   <!--- <div class="ui remote multiple search selection dropdown"
                         <i class="dropdown icon"></i>
                         <div class="default text">Search...</div>
                         <div class="menu"></div>
-                    </div>
+                    </div>-->
+<input type="text" class="ui" id="evas" placeholder="evas-id">
                 </div>
                 <div class="field">
                     <label>Verkehrsmittel</label>
-                    <select id="transportType" multiple="" class="ui transport dropdown">
+                   <select id="transportType" multiple="" class="ui transport dropdown">
                         <option value="">Verkehrsmittel auswählen</option>
                         <option value="HIGH_SPEED_TRAIN">Hochgeschwindigkeitszüge</option>
                         <option value="INTERCITY_TRAIN">Intercity und Eurocity</option>
@@ -237,7 +238,8 @@
             })
         $("#submit")
             .click(function () {
-                var evas = $(".ui.search.dropdown").dropdown("get values").toString();
+                //var evas = $(".ui.search.dropdown").dropdown("get values").toString();
+var Evas = $("#evas").value();
                 var transportTypes = $(".ui.transport.dropdown").dropdown("get values").toString();
                 var includeStationGroup = $(".ui.checkbox").checkbox("is checked").toString();
                 var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
