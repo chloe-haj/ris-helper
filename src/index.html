@@ -239,7 +239,7 @@
         $("#submit")
             .click(function () {
                 //var evas = $(".ui.search.dropdown").dropdown("get values").toString();
-var Evas = $("#evas").value;
+var Evas = $("#evas")[0].value;
                 var transportTypes = $(".ui.transport.dropdown").dropdown("get values").toString();
                 var includeStationGroup = $(".ui.checkbox").checkbox("is checked").toString();
                 var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
