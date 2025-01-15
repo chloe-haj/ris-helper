@@ -115,19 +115,21 @@
         $('.ui.search.dropdown')
             .dropdown({
                 apiSettings: {
-                    url: 'https://v6.db.transport.rest/stations?query={query}&results=20&fuzzy=true',
+                    url: 'https://api.ris.rosahaj.xyz/orte.php?suchbegriff={query}',
                     onResponse: function (hafasResponse) {
                         var response = {
                             "results": []
                         };
                         var query = $('.ui.search.dropdown').dropdown('get query')
                         //check if the query is a ril100 abbreviation
+                        /* DS 100 is nonfunctional for now
                         if (1 < query.trim().length < 5) {
                             var ril100 = query.toUpperCase();
                             //get name and id for the ril 100 abbreviation
                             $.ajax(`https://v6.db.transport.rest/stations/${ril100}`, {
                                 success: function (res) {
                                     if (res.ril100 == ril100) {
+                                score: item.score
                                         response.results.push({
                                             name: `<b>${res.ril100}</b> - ${res.name}`,
                                             value: res.id,
@@ -138,7 +140,7 @@
                                 },
                                 async: false
                             })
-                        }
+                        }*/
                         //add results for some special people
                         switch (query.toLowerCase()) {
                             case "lili":    //@lili@zug.network
@@ -168,17 +170,17 @@
                         $.each(hafasResponse, function (index, item) {
                             //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
                             response.results.push({
-                                name: `<b>${item.ril100}</b> - ${item.name}`,
-                                value: item.id,
-                                score: item.score
+                                name: item.name,
+                                value: item.extId
                             })
                         })
                         //sort by score
-                        response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+                        //response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
                         return response
                     },
                     error: function (XHR, status, error) {
-                        if ($(".ui.error.toast").toast("get toasts").length == 0 && error != "abort")
+                        //TODO: reenable error handeling 
+                        /*if ($(".ui.error.toast").toast("get toasts").length == 0 && error != "abort")
                             $('body').toast({
                                 class: "error",
                                 title: "Error",
@@ -189,7 +191,8 @@
                                     text: "Ok"
                                 }],
                                 showIcon: "exclamation triangle"
-                            })
+                            })*/
+                           console.log(error)
                     }
                 },
                 saveRemoteData: true,
