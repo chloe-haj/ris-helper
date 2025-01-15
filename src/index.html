@@ -26,11 +26,10 @@
                 <div class="header">
                   Die DB hat die Hafas API abgeschaltet. 
                 </div>
-                Die Stationssuche ist nicht mehr verfügbar, alternativ kann eine evas-Nummer eingegeben werden. Diese können z.B. bei <a href="https://de.wikipedia.org/">Wikipedia</a> oder der <a href="https://www.openstreetmap.org/">OpenStreetMap</a> gefunden werden. Dort werden sie in der Regel als IBNR oder uic_id bezeichnet. <br> An einer Lösung wird gearbeitet.
+                    Eine andere API existiert als Alternative, diese Zeigt teilweise Orte an, die keine Stationen sind. <br> Die Suche nach DS 100 Abkürzungen ist aktuell nicht möglich. <br> Teilweise gibt die RIS-Bahnhofstafel Fehlermeldungen aus <br> Die aktuelle Version ist als Fix zu verstehen, aktuell wird an einer eigenen Datenquelle gearbeitet
               </div>
             <div class="ui form">
                 <div class="field">
-                    <!--Stations are fetched via the hafas backend @v5.db.transport.rest-->
                     <label>Station</label>
                    <!--- <div class="ui remote multiple search selection dropdown"
                         <i class="dropdown icon"></i>
@@ -85,7 +84,7 @@
                     <i class="bug icon"></i>found a bug?
                 </a>
                 <div class="ui item">
-                    0.4.3
+                    0.4.4
                 </div>
             </div>
         </div>
@@ -121,19 +120,21 @@
         $('.ui.search.dropdown')
             .dropdown({
                 apiSettings: {
-                    url: 'https://v6.db.transport.rest/stations?query={query}&results=20&fuzzy=true',
+                    url: 'https://api.ris.rosahaj.xyz/orte.php?suchbegriff={query}',
                     onResponse: function (hafasResponse) {
                         var response = {
                             "results": []
                         };
                         var query = $('.ui.search.dropdown').dropdown('get query')
                         //check if the query is a ril100 abbreviation
+                        /* DS 100 is nonfunctional for now
                         if (1 < query.trim().length < 5) {
                             var ril100 = query.toUpperCase();
                             //get name and id for the ril 100 abbreviation
                             $.ajax(`https://v6.db.transport.rest/stations/${ril100}`, {
                                 success: function (res) {
                                     if (res.ril100 == ril100) {
+                                score: item.score
                                         response.results.push({
                                             name: `<b>${res.ril100}</b> - ${res.name}`,
                                             value: res.id,
@@ -144,7 +145,7 @@
                                 },
                                 async: false
                             })
-                        }
+                        }*/
                         //add results for some special people
                         switch (query.toLowerCase()) {
                             case "lili":    //@lili@zug.network
@@ -174,17 +175,17 @@
                         $.each(hafasResponse, function (index, item) {
                             //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
                             response.results.push({
-                                name: `<b>${item.ril100}</b> - ${item.name}`,
-                                value: item.id,
-                                score: item.score
+                                name: item.name,
+                                value: item.extId
                             })
                         })
                         //sort by score
-                        response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+                        //response.results.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
                         return response
                     },
                     error: function (XHR, status, error) {
-                        if ($(".ui.error.toast").toast("get toasts").length == 0 && error != "abort")
+                        //TODO: reenable error handeling 
+                        /*if ($(".ui.error.toast").toast("get toasts").length == 0 && error != "abort")
                             $('body').toast({
                                 class: "error",
                                 title: "Error",
@@ -195,7 +196,8 @@
                                     text: "Ok"
                                 }],
                                 showIcon: "exclamation triangle"
-                            })
+                            })*/
+                           console.log(error)
                     }
                 },
                 saveRemoteData: true,
