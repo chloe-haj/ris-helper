@@ -31,15 +31,16 @@
             <div class="ui form">
                 <div class="field">
                     <label>Station</label>
-                    <div class="ui remote multiple search selection dropdown">
+                   <!--- <div class="ui remote multiple search selection dropdown"
                         <i class="dropdown icon"></i>
                         <div class="default text">Search...</div>
                         <div class="menu"></div>
-                    </div>
+                    </div>-->
+<input type="text" class="ui" id="evas" placeholder="evas-id">
                 </div>
                 <div class="field">
                     <label>Verkehrsmittel</label>
-                    <select id="transportType" multiple="" class="ui transport dropdown">
+                   <select id="transportType" multiple="" class="ui transport dropdown">
                         <option value="">Verkehrsmittel auswählen</option>
                         <option value="HIGH_SPEED_TRAIN">Hochgeschwindigkeitszüge</option>
                         <option value="INTERCITY_TRAIN">Intercity und Eurocity</option>
@@ -78,7 +79,6 @@
         <div class="computer only three wide column"></div>
         <div class="ui bottom fixed text menu">
             <a class="item" href="https://github.com/chloe-haj/ris-helper"><i class="github icon"></i>Quelltext</a>
-            <a class="item" href="https://chloe.rosahaj.xyz/pages/impressum">Impressum</a>
             <div class="right menu">
                 <a class="item" href="https://github.com/chloe-haj/ris-helper/issues/new">
                     <i class="bug icon"></i>found a bug?
@@ -244,7 +244,8 @@
             })
         $("#submit")
             .click(function () {
-                var evas = $(".ui.search.dropdown").dropdown("get values").toString();
+                //var evas = $(".ui.search.dropdown").dropdown("get values").toString();
+var evas = $("#evas").val();
                 var transportTypes = $(".ui.transport.dropdown").dropdown("get values").toString();
                 var includeStationGroup = $(".ui.checkbox").checkbox("is checked").toString();
                 var timeSpan = $('.ui.slider' && "#timeSpan").slider("get value");
