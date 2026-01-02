@@ -171,6 +171,13 @@
                                     score: "999"
                                 });
                                 break;
+                            case "tea":
+                                response.results.push({
+                                    name: "<b>TS</b> - Stuttgart Hbf",
+                                    value: "8000096",
+                                    score: "999"
+                                })
+                                break;
                         };
                         $.each(hafasResponse, function (index, item) {
                             //Take the relevant parts out of the result object and push them to an array that fomantic can actually work with 
@@ -204,7 +211,7 @@
                 keepSearchTerm: true,
                 onSearch: function () {
                     //trigger the cuties toast if any cutie is present in the search 
-                    let cuties = ["lili", "chloe", "emily", "atlantik"]
+                    let cuties = ["lili", "chloe", "emily", "atlantik", "tea"]
                     for (let index = 0; index < cuties.length; index++) {
                         if ($(".ui.search.dropdown").dropdown("get query").toLowerCase() == cuties[index]) {
                             $("#cutieToast").toast({
